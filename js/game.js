@@ -15,6 +15,7 @@ class Game {
         
         this.bullets = [];
         this.asteroids = [];
+        this.explosions = [];
         this.score = 0;
         this.keys = {};
         
@@ -56,6 +57,12 @@ class Game {
     }
     
     update() {
+        // Update explosions
+        this.explosions = this.explosions.filter(explosion => {
+            explosion.frame++;
+            return explosion.frame < explosion.maxFrames;
+        });
+
         // Player movement
         if (this.keys['ArrowLeft']) this.player.x -= this.player.speed;
         if (this.keys['ArrowRight']) this.player.x += this.player.speed;
@@ -73,15 +80,31 @@ class Game {
         this.asteroids = this.asteroids.filter(asteroid => {
             asteroid.y += asteroid.speed;
             
+            let asteroidDestroyed = false;
+            
             // Check collision with bullets
             this.bullets = this.bullets.filter(bullet => {
                 if (this.checkCollision(bullet, asteroid)) {
                     this.score += 10;
                     document.getElementById('scoreValue').textContent = this.score;
+                    // Create explosion
+                    this.explosions.push({
+                        x: asteroid.x,
+                        y: asteroid.y,
+                        size: asteroid.width * 1.5,
+                        frame: 0,
+                        maxFrames: 15
+                    });
+                    asteroidDestroyed = true;
                     return false;
                 }
                 return true;
             });
+            
+            // If asteroid was hit by bullet, don't check player collision
+            if (asteroidDestroyed) {
+                return false;
+            }
             
             // Check collision with player
             if (this.checkCollision(this.player, asteroid)) {
@@ -118,6 +141,35 @@ class Game {
         this.ctx.fillStyle = '#ff0000';
         this.asteroids.forEach(asteroid => {
             this.ctx.fillRect(asteroid.x, asteroid.y, asteroid.width, asteroid.height);
+        });
+
+        // Draw explosions
+        this.explosions.forEach(explosion => {
+            const alpha = 1 - (explosion.frame / explosion.maxFrames);
+            const size = explosion.size * (1 + explosion.frame / explosion.maxFrames);
+            
+            this.ctx.beginPath();
+            this.ctx.arc(
+                explosion.x + explosion.size/2, 
+                explosion.y + explosion.size/2, 
+                size/2, 
+                0, 
+                Math.PI * 2
+            );
+            this.ctx.fillStyle = `rgba(255, 165, 0, ${alpha})`;
+            this.ctx.fill();
+            
+            // Add inner explosion circle
+            this.ctx.beginPath();
+            this.ctx.arc(
+                explosion.x + explosion.size/2, 
+                explosion.y + explosion.size/2, 
+                size/4, 
+                0, 
+                Math.PI * 2
+            );
+            this.ctx.fillStyle = `rgba(255, 255, 0, ${alpha})`;
+            this.ctx.fill();
         });
     }
     
