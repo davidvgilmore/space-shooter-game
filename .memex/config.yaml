@@ -1,0 +1,28 @@
+git:
+  branch: main
+  remote: origin
+  url: https://github.com/davidvgilmore/space-shooter-game.git
+project:
+  creator_id: davidgilmore
+  description: A browser-based space shooter game where players control a ship and
+    shoot incoming asteroids. Built with HTML5 Canvas, CSS, and JavaScript.
+  id: NhuvhST4ZmPyggwV7Wux
+  is_published: true
+  og_metadata:
+    description: Classic arcade-style space shooter built with HTML5 Canvas. Control
+      your ship, shoot asteroids, and compete for high scores.
+    title: Space Shooter Game
+    type: website
+  published_at:
+    _nanoseconds: 201000000
+    _seconds: 1736961596
+  slug: space-shooter-game
+  title: Space Shooter Game
+storage:
+  compression_enabled: false
+  gcs_path: projects/space-shooter-game/
+  last_sync:
+    _nanoseconds: 201000000
+    _seconds: 1736961596
+  max_file_size_mb: 100
+  size_bytes: 0
